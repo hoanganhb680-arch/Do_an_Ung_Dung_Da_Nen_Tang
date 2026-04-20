@@ -1,4 +1,4 @@
-package org.example.khoahoc.dto.request;
+package org.example.khoahoc.dto.response;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -7,20 +7,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
-import java.math.BigDecimal;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class WebhookCallbackRequest {
-    Long transactionId;
-    String transactionRef;
-    Long orderId;
-    Long userId;
-    BigDecimal amount;
-    String status;
-    String timestamp;
-    String nonce;
+public class PaymentCheckoutResponse {
+    PaymentTransactionResponse transaction;
+    String paymentUrl;
 }

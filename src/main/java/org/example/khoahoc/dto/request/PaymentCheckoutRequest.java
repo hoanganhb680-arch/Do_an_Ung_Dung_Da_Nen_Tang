@@ -1,6 +1,10 @@
 package org.example.khoahoc.dto.request;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
@@ -10,11 +14,9 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class PaymentTransactionCreationRequest {
+public class PaymentCheckoutRequest {
     Long userId;
     Long orderId;
     BigDecimal amount;
-    String paymentMethod;
-    String transactionRef;
-    String ipAddress;
+    String returnUrl;
 }

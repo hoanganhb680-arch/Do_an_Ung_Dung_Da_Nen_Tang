@@ -28,13 +28,13 @@ public class EnrollmentService {
         log.info("Creating new enrollment for userId: {}, courseId: {}", request.getUserId(), request.getCourseId());
 
         if (enrollmentRepository.findByUserIdAndCourseId(request.getUserId(), request.getCourseId()).isPresent()) {
-            throw new RuntimeException("User is already enrolled in this course"); // You could add ENROLLMENT_EXISTED to ErrorCode
+            throw new AppException(ErrorCode.ENROLLMENT_EXISTED);
         }
 
         Enrollment enrollment = Enrollment.builder()
                 .userId(request.getUserId())
                 .courseId(request.getCourseId())
-                .build(); // progress and status are handled by @PrePersist
+                .build();
 
         enrollment = enrollmentRepository.save(enrollment);
         return mapToResponse(enrollment);
@@ -57,7 +57,7 @@ public class EnrollmentService {
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
-    
+
     public List<EnrollmentResponse> getEnrollmentsByCourseId(Long courseId) {
         return enrollmentRepository.findByCourseId(courseId).stream()
                 .map(this::mapToResponse)

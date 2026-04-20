@@ -14,13 +14,13 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class WebhookCallbackRequest {
-    Long transactionId;
+public class GatewayInitiateRequest {
     String transactionRef;
     Long orderId;
     Long userId;
     BigDecimal amount;
-    String status;
+    String returnUrl;
+    String ipnUrl;
     String timestamp;
     String nonce;
 }

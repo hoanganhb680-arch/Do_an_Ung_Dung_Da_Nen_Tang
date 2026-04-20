@@ -24,25 +24,16 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            // Tắt CSRF vì dùng JWT (stateless)
             .csrf(AbstractHttpConfigurer::disable)
-
-            // Stateless — không tạo session
-            .sessionManagement(session ->
-                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            )
-
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                // Public: đăng ký tài khoản và đăng nhập
                 .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
-                // Public Webhook: Nhận callback từ 3rd party payment, xác thực bằng API/Secret key
                 .requestMatchers(HttpMethod.POST, "/api/webhook/payment").permitAll()
-                // Tất cả endpoint còn lại yêu cầu xác thực JWT
+                .requestMatchers(HttpMethod.POST, "/api/payments/ipn").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/payments/callback").permitAll()
                 .anyRequest().authenticated()
             )
-
-            // Đăng ký JWT filter trước filter mặc định của Spring Security
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
