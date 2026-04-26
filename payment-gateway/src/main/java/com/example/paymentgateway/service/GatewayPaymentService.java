@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -16,18 +15,18 @@ public class GatewayPaymentService {
     private final GatewaySignatureService gatewaySignatureService;
     private final LmsCallbackClient lmsCallbackClient;
 
-    @Value("${payment.gateway.secret-key:GATEWAY_SECRET_KEY}")
+    @Value("${payment.gateway.secret-key:SHARED_HMAC_SECRET_2024}")
     private String secretKey;
 
-    @Value("${payment.merchant.api-key:LMS_API_KEY}")
+    @Value("${payment.gateway.api-key:GATEWAY_CALLBACK_KEY}")
     private String apiKey;
 
     public InitiatePaymentResponse initiate(InitiatePaymentRequest request) {
-        String gatewayTransactionRef = UUID.randomUUID().toString();
+        String gatewayTransactionRef = request.getTransactionRef();
         String status = "SUCCESS"; // mock demo: đổi sang FAILED nếu muốn test
 
         IpnCallbackRequest callbackRequest = IpnCallbackRequest.builder()
-                .gatewayTransactionRef(gatewayTransactionRef)
+                .transactionRef(gatewayTransactionRef)
                 .orderId(request.getOrderId())
                 .userId(request.getUserId())
                 .amount(request.getAmount())
@@ -36,10 +35,10 @@ public class GatewayPaymentService {
                 .nonce(request.getNonce())
                 .build();
 
-        String payload = callbackRequest.getGatewayTransactionRef() + "|" +
+        String payload = callbackRequest.getTransactionRef() + "|" +
                 callbackRequest.getOrderId() + "|" +
                 callbackRequest.getUserId() + "|" +
-                callbackRequest.getAmount() + "|" +
+                callbackRequest.getAmount().setScale(2, java.math.RoundingMode.HALF_UP).toPlainString() + "|" +
                 callbackRequest.getStatus() + "|" +
                 callbackRequest.getTimestamp() + "|" +
                 callbackRequest.getNonce();

@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class IpnCallbackRequest {
-    String gatewayTransactionRef;
+    String transactionRef;
     Long orderId;
     Long userId;
     BigDecimal amount;
